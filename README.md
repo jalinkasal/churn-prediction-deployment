@@ -4,6 +4,22 @@
 
 Projekt przedstawia uproszczony system end-to-end do predykcji churn klientów firmy telekomunikacyjnej. Został przygotowany w języku R na podstawie zbioru danych **Telco Customer Churn**. Rozwiązanie obejmuje model zapisany jako plik `.rds`, kontrakt wejścia i wyjścia w formacie JSON, lokalne REST API w `plumber`, aplikację `Shiny`, predykcję wsadową dla pliku CSV oraz smoke testy zapisujące raport do pliku JSON. Projekt wykorzystuje kontrakt wejściowy oparty na polach `tenure`, `MonthlyCharges` oraz `TotalCharges`, zgodnie z wymaganiami API i aplikacji Shiny.
 
+## Dane
+
+Projekt korzysta ze zbioru danych Telco Customer Churn.
+
+Pełny plik danych `Telco-Customer-Churn.csv` nie został dołączony do repozytorium, ponieważ prawa do danych należą do oryginalnych autorów. Aby odtworzyć trenowanie modelu, należy pobrać dataset z oryginalnego źródła(https://www.kaggle.com/datasets/blastchar/telco-customer-churn) i umieścić plik w lokalizacji:
+
+```text
+data/raw/Telco-Customer-Churn.csv
+```
+
+W repozytorium znajduje się jedynie przykładowy plik do testowania predykcji wsadowej:
+
+```text
+data/examples/batch_test_c4.csv
+```
+
 ## Uruchomienie projektu
 
 Przed uruchomieniem projektu należy zainstalować pakiety:
@@ -48,7 +64,7 @@ Wynik testów zostanie zapisany w pliku `tests/test_report.json`.
 
 ## Wybrane składniki projektu
 
-### A3 -- `POST /predict_batch`
+### `POST /predict_batch`
 
 **Cel**\
 Składnik umożliwia wykonanie predykcji churn dla wielu klientów w jednym żądaniu. Endpoint przetwarza listę rekordów wejściowych i zwraca wynik osobno dla każdego klienta. Błędny rekord nie przerywa przetwarzania całego batcha.
@@ -111,7 +127,7 @@ W aplikacji `Shiny` składnik jest używany w zakładce **Predykcja wsadowa (bat
 **Minimalny test**\
 Należy wysłać batch zawierający co najmniej jeden rekord poprawny i jeden błędny. Oczekiwany wynik: poprawny rekord otrzymuje predykcję, a błędny rekord otrzymuje `ok = false` i komunikat błędu, bez przerwania całego batcha.
 
-### B3 -- statusy HTTP + stały format błędów
+### Statusy HTTP + stały format błędów
 
 **Cel**\
 Składnik zapewnia spójny sposób obsługi błędów w API. Odpowiedzi sukcesu i błędu mają przewidywalną strukturę, a endpointy zwracają odpowiednie statusy HTTP.
@@ -144,7 +160,7 @@ Dotyczy endpointów `POST /predict` oraz `POST /predict_batch`. W przypadku bł�
 **Minimalny test**\
 Należy wysłać niepoprawne dane wejściowe, np. z brakującym polem lub błędnym typem. Oczekiwany wynik: API zwraca status `400` oraz JSON zawierający `error_code`, `error_message` i `detail`.
 
-### C4 -- batch upload + błędy per rekord
+### Batch upload + błędy per rekord
 
 **Cel**\
 Składnik umożliwia użytkownikowi wgranie pliku CSV w aplikacji `Shiny` i wykonanie predykcji wsadowej bez ręcznego tworzenia JSON. Wyniki oraz błędy są prezentowane osobno dla każdego rekordu.
@@ -175,7 +191,7 @@ W aplikacji wyświetlana jest tabela zawierająca m.in. pola `input_index`, `ok`
 **Minimalny test**\
 Należy wgrać plik `data/examples/batch_test_c4.csv`, zawierający 5 wierszy, z czego 1 wiersz jest błędny. Oczekiwany wynik: poprawne rekordy otrzymują wynik predykcji, a błędny rekord otrzymuje komunikat błędu w tabeli, bez przerwania przetwarzania całego batcha.
 
-### D1 -- smoke tests + raport JSON
+### Smoke tests + raport JSON
 
 **Cel**\
 Składnik służy do szybkiego sprawdzenia, czy podstawowe endpointy API działają poprawnie oraz czy projekt jest gotowy do uruchomienia.
@@ -221,7 +237,7 @@ source("scripts/05_smoke_tests.R")
 **Minimalny test**\
 Przy działającym API należy uruchomić skrypt smoke testów. Oczekiwany wynik: testy dla `/health`, `/predict` i `/predict_batch` kończą się sukcesem, a raport zostaje zapisany do pliku `tests/test_report.json`.
 
-### E3 -- segmentacja ryzyka + rekomendowana akcja
+### Segmentacja ryzyka + rekomendowana akcja
 
 **Cel**\
 Składnik rozszerza wynik modelu o interpretację biznesową. Oprócz prawdopodobieństwa churn użytkownik otrzymuje segment ryzyka oraz sugerowaną akcję retencyjną.
