@@ -1,0 +1,23 @@
+[
+  {
+    "test_name": "GET /health",
+    "passed": true,
+    "status_http": 200,
+    "duration_ms": 347.92,
+    "error": null
+  },
+  {
+    "test_name": "POST /predict",
+    "passed": true,
+    "status_http": 200,
+    "duration_ms": 25.74,
+    "error": null
+  },
+  {
+    "test_name": "POST /predict_batch",
+    "passed": true,
+    "status_http": 200,
+    "duration_ms": 24.22,
+    "error": null
+  }
+]
